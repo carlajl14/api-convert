@@ -3,6 +3,8 @@ from PIL import Image
 import io
 import os
 from fpdf import FPDF
+import tempfile
+import logging
 
 app = FastAPI()
 
@@ -20,9 +22,10 @@ async def convert_image_to_pdf(file: UploadFile = File(...)):
         if image.mode != "RGB":
             image = image.convert("RGB")
 
-        # Guardar la imagen temporalmente
-        temp_image_path = "temp_image.jpg"
-        image.save(temp_image_path, format="JPEG")
+        # Guardar la imagen temporalmente en un directorio temporal
+        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as temp_image_file:
+            image.save(temp_image_file, format="JPEG")
+            temp_image_path = temp_image_file.name
 
         # Añadir la imagen al PDF
         pdf.image(temp_image_path, x=10, y=10, w=190)
@@ -41,6 +44,7 @@ async def convert_image_to_pdf(file: UploadFile = File(...)):
             "pdf": pdf_output.getvalue().hex()
         }
     except Exception as e:
+        logging.error(f"Error converting image to PDF: {e}")
         return {"status": "error", "message": str(e)}
 
 # Configuración para Vercel
