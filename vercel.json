@@ -11,14 +11,6 @@
         "src": "/(.*)",
         "dest": "api/main.py"
       }
-    ],
-    "build": {
-      "env": {
-        "PYTHONUNBUFFERED": "1"
-      },
-      "scripts": {
-        "build": "bash install.sh"
-      }
-    }
+    ]
   }
   
