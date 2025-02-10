@@ -2,3 +2,4 @@ fastapi
 pillow
 fpdf
 mangum
+python-multipart
