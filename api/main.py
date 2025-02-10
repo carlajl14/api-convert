@@ -25,7 +25,7 @@ async def convert_image_to_pdf(file: UploadFile = File(...)):
         image.save(temp_image_path, format="JPEG")
 
         # Añadir la imagen al PDF
-        pdf.image(temp_image_path, x=10, y=10, w=190)  # Ajustar posición y tamaño según sea necesario
+        pdf.image(temp_image_path, x=10, y=10, w=190)
 
         # Guardar el PDF en memoria
         pdf_output = io.BytesIO()
@@ -38,7 +38,7 @@ async def convert_image_to_pdf(file: UploadFile = File(...)):
         # Retornar el PDF como respuesta
         return {
             "status": "success",
-            "pdf": pdf_output.getvalue().hex()  # Retornar como hex para ser procesado
+            "pdf": pdf_output.getvalue().hex()
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
