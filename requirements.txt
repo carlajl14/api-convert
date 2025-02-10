@@ -3,3 +3,4 @@ pillow
 fpdf
 mangum
 python-multipart
+gunicorn
