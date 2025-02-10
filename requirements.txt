@@ -1,5 +1,5 @@
-fastapi
-pillow
-fpdf
-mangum
-python-multipart
+fastapi==0.75.2
+pillow==9.0.1
+fpdf==1.7.2
+mangum==0.12.3
+python-multipart==0.0.5
