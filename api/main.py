@@ -1,23 +1,15 @@
-from fastapi import FastAPI, File, UploadFile
-from PIL import Image
-import io
+import cv2
+import numpy as np
 from fpdf import FPDF
-from mangum import Mangum
 
-app = FastAPI()
-
-@app.post("/convert-image")
-async def convert_image_to_pdf(file: UploadFile = File(...)):
+def convert_image_to_pdf(image_file):
     try:
-        image = Image.open(io.BytesIO(await file.read()))
+        # Leer la imagen
+        image = cv2.imdecode(np.frombuffer(image_file.read(), np.uint8), cv2.IMREAD_COLOR)
         pdf = FPDF()
         pdf.add_page()
-        if image.mode != "RGB":
-            image = image.convert("RGB")
-        img_buffer = io.BytesIO()
-        image.save(img_buffer, format="JPEG")
-        img_buffer.seek(0)
-        pdf.image(img_buffer, x=10, y=10, w=190)
+        img_buffer = cv2.imencode('.jpg', image)[1].tobytes()
+        pdf.image(io.BytesIO(img_buffer), x=10, y=10, w=190)
         pdf_output = io.BytesIO()
         pdf.output(pdf_output)
         pdf_output.seek(0)
@@ -28,8 +20,11 @@ async def convert_image_to_pdf(file: UploadFile = File(...)):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-# Para Vercel
-import os
-if "VERCEL" in os.environ:
-    from mangum import Mangum
-    handler = Mangum(app)
+# Ejemplo de uso en FastAPI
+from fastapi import FastAPI, File, UploadFile
+
+app = FastAPI()
+
+@app.post("/convert-image")
+async def api_convert_image_to_pdf(file: UploadFile = File(...)):
+    return convert_image_to_pdf(await file.read())
