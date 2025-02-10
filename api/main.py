@@ -2,6 +2,7 @@ from fastapi import FastAPI, File, UploadFile
 from PIL import Image
 import io
 from fpdf import FPDF
+from mangum import Mangum
 
 app = FastAPI()
 
